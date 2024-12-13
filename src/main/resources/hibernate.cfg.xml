@@ -12,8 +12,8 @@
 
         <!-- Hibernate Settings -->
         <property name="hibernate.transaction.coordinator_class">jdbc</property>
-        <property name="hibernate.show_sql">true</property>
-        <property name="hibernate.format_sql">true</property>
+        <property name="hibernate.show_sql">false</property>
+        <property name="hibernate.format_sql">false</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
         <property name="hibernate.archive.scan.enable">true</property>
 
