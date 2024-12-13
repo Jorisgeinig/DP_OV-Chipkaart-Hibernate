@@ -28,22 +28,22 @@ public class Main {
         // Maak een nieuwe reiziger aan en persisteer deze in de database
         String gbdatum = "1981-03-14";
         Reiziger reiziger = new Reiziger(10, "S", null, "Boers", java.sql.Date.valueOf(gbdatum));
-        System.out.print("[Test] Eerst " + reizigers.size() + " reizigers, na ReizigerDAO.save() ");
+        System.out.print("[Test Save] Eerst " + reizigers.size() + " reizigers, na ReizigerDAO.save() ");
         reizigerDAO.save(reiziger);
         reizigers = reizigerDAO.findAll();
         System.out.println(reizigers.size() + " reizigers\n");
 
         // Update Test
         Reiziger newReiziger = new Reiziger(10, "L.P", null, "Hoogkerk", java.sql.Date.valueOf("1977-02-04"));
-        System.out.println("[Test] eerst is reiziger: " + reiziger);
+        System.out.println("[Test Update] eerst is reiziger: " + reiziger);
         reizigerDAO.update(newReiziger);
         System.out.println("[Test] Na update is reiziger: " + newReiziger);
 
         // Delete Test
-        System.out.println("[Test] eerst zijn er " + reizigers.size());
+        System.out.println("\n[Test Delete] eerst zijn er " + reizigers.size() + " reizigers");
         reizigerDAO.delete(newReiziger);
         List<Reiziger> reizigersAfter = reizigerDAO.findAll();
-        System.out.println("[Test] Na delete zijn er " + reizigersAfter.size());
+        System.out.println("[Test] Na delete zijn er " + reizigersAfter.size() + " reizigers");
     }
 
     public static void main(String[] args) {
