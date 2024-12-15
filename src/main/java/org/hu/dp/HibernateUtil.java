@@ -4,6 +4,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
+import org.hu.dp.domain.Adres;
 import org.hu.dp.domain.Reiziger;
 
 public class HibernateUtil {
@@ -18,6 +19,7 @@ public class HibernateUtil {
                     .build();
             sessionFactory = configuration
                     .addAnnotatedClass(Reiziger.class)
+                    .addAnnotatedClass(Adres.class)
                     .buildSessionFactory(serviceRegistry);
         } catch (Throwable ex) {
             System.err.println("Initial SessionFactory creation failed: " + ex);

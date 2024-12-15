@@ -22,5 +22,6 @@
 
         <!-- Entity Mappings -->
         <mapping class="org.hu.dp.domain.Reiziger" />
+        <mapping class="org.hu.dp.domain.Adres" />
     </session-factory>
 </hibernate-configuration>

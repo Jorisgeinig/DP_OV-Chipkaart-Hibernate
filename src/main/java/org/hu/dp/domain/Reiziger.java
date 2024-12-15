@@ -22,6 +22,10 @@ public class Reiziger {
 
     private Date geboortedatum;
 
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "adres") // One-to-one relationship
+    @JoinColumn(name = "reiziger_id")
+    private Adres adres;
+
     public Reiziger(){
     }
 
@@ -81,6 +85,14 @@ public class Reiziger {
     public void setGeboortedatum(Date geboortedatum) {
         this.geboortedatum = geboortedatum;
     }
+    public Adres getAdres() {
+        return adres;
+    }
+
+    public void setAdres(Adres adres) {
+        this.adres = adres;
+    }
+
 
 
     public String toString() {
@@ -103,11 +115,14 @@ public class Reiziger {
             voorl_punt += ".";
         }
 
+        String adresid = String.valueOf(this.adres.getAdres_id());
+
         return String.format("#%d %s%s %s (%s)",
                 reiziger_id,
                 voorl_punt,
                 (tussenvoegsel != null) ? " " + tussenvoegsel : "",
                 achternaam,
-                formattedDate);
+                formattedDate,
+                adresid);
     }
 }

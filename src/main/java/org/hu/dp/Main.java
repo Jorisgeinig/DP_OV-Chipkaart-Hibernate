@@ -1,15 +1,6 @@
 package org.hu.dp;
+import org.hu.dp.domain.*;
 
-import org.hibernate.Session;
-import org.hu.dp.domain.Reiziger;
-import org.hu.dp.domain.ReizigerDAO;
-import org.hu.dp.domain.ReizigerDAOHibernate;
-
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.List;
 
 public class Main {
@@ -46,9 +37,52 @@ public class Main {
         System.out.println("[Test] Na delete zijn er " + reizigersAfter.size() + " reizigers");
     }
 
+    private static void testAdres(AdresDAO adresDAO, ReizigerDAO reizigerDAO) {
+        System.out.println("\n---------- Test AdresDAO -------------");
+
+        // Retrieve all addresses from the database
+        List<Adres> adressen = adresDAO.findAll();
+        System.out.println("[Test] AdresDAO.findAll() geeft de volgende adressen:");
+        for (Adres a : adressen) {
+            System.out.println(a);
+        }
+        System.out.println();
+
+        // Create a new Reiziger and Adres, and persist them in the database
+        String geboortedatum = "1981-03-14";
+        Reiziger reiziger = new Reiziger(11, "S", null, "Boers", java.sql.Date.valueOf(geboortedatum));
+        Adres adres = new Adres(6, "1234AB", "12", "Bakkerstraat", "Utrecht");
+
+        // Establish the one-to-one relationship
+        adres.setReiziger(reiziger);
+        reiziger.setAdres(adres);
+
+        System.out.print("[Test Save] Eerst " + adressen.size() + " adressen, na AdresDAO.save() ");
+        adresDAO.save(adres);  // Save Adres and reiziger together
+        adressen = adresDAO.findAll();
+        System.out.println(adressen.size() + " adressen\n");
+
+        // Update Test
+        Adres updatedAdres = new Adres(6, "5678CD", "34", "Kerkstraat", "Amsterdam");
+        updatedAdres.setReiziger(reiziger);  // Keep the relationship intact
+        System.out.println("[Test Update] eerst is adres: " + adres);
+        adresDAO.update(updatedAdres);
+        System.out.println("[Test] Na update is adres: " + updatedAdres);
+
+        // Delete Test
+        System.out.println("\n[Test Delete] eerst zijn er " + adressen.size() + " adressen");
+        adresDAO.delete(updatedAdres);
+        reizigerDAO.delete(reiziger);
+        List<Adres> adressenAfter = adresDAO.findAll();
+        System.out.println("[Test] Na delete zijn er " + adressenAfter.size() + " adressen");
+    }
+
+
     public static void main(String[] args) {
         ReizigerDAO reizigerDAO = new ReizigerDAOHibernate();
-        testReiziger(reizigerDAO);
+        AdresDAO adresDAO = new AdresDAOPHibernate();
+      //  testReiziger(reizigerDAO);
+        testAdres(adresDAO, reizigerDAO);
         HibernateUtil.shutdown();
         }
     }
