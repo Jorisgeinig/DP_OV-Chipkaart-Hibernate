@@ -26,6 +26,10 @@ public class Reiziger {
     @JoinColumn(name = "reiziger_id")
     private Adres adres;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "reiziger_id")
+    private List<OVChipkaart> ovChipkaartList = new ArrayList<>();
+
     public Reiziger(){
     }
 
@@ -91,6 +95,14 @@ public class Reiziger {
 
     public void setAdres(Adres adres) {
         this.adres = adres;
+    }
+
+    public List<OVChipkaart> getOvChipkaartList() {
+        return ovChipkaartList;
+    }
+
+    public void setOvChipkaartList(List<OVChipkaart> ovChipkaartList) {
+        this.ovChipkaartList = ovChipkaartList;
     }
 
 

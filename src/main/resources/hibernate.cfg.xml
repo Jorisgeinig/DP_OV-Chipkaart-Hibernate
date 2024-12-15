@@ -23,5 +23,6 @@
         <!-- Entity Mappings -->
         <mapping class="org.hu.dp.domain.Reiziger" />
         <mapping class="org.hu.dp.domain.Adres" />
+        <mapping class="org.hu.dp.domain.OVChipkaart" />
     </session-factory>
 </hibernate-configuration>

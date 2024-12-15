@@ -77,12 +77,54 @@ public class Main {
         System.out.println("[Test] Na delete zijn er " + adressenAfter.size() + " adressen");
     }
 
+    private static void testOVChipkaart(OVChipkaartDAO ovChipkaartDAO, ReizigerDAO reizigerDAO) {
+        System.out.println("\n---------- Test OVChipkaartDAO -------------");
+
+        // Retrieve all OVChipkaarten from the database
+        List<OVChipkaart> ovChipkaarten = ovChipkaartDAO.findAll();
+        System.out.println("[Test] OVChipkaartDAO.findAll() geeft de volgende OVChipkaarten:");
+        for (OVChipkaart oc : ovChipkaarten) {
+            System.out.println(oc);
+        }
+        System.out.println();
+
+        // Create a new Reiziger and OVChipkaart, and persist them in the database
+        Reiziger reiziger = new Reiziger(12, "S", null, "Boers", java.sql.Date.valueOf("1981-03-14"));
+        OVChipkaart ovChipkaart = new OVChipkaart(12345, java.sql.Date.valueOf("2024-12-31"), 2, 50.0);
+        ovChipkaart.setReiziger(reiziger);
+
+        System.out.print("[Test Save] Eerst " + ovChipkaarten.size() + " OVChipkaarten, na OVChipkaartDAO.save() ");
+        ovChipkaartDAO.save(ovChipkaart);
+        ovChipkaarten = ovChipkaartDAO.findAll();
+        System.out.println(ovChipkaarten.size() + " OVChipkaarten\n");
+
+        // Update Test
+        System.out.println("[Test Update] eerst is ovchipkaart: " + ovChipkaart);
+        OVChipkaart newovChipkaart = new OVChipkaart(12345, java.sql.Date.valueOf("2022-12-31"), 1, 100.0);
+        Reiziger reiziger1 = reizigerDAO.findAll().get(0);
+        newovChipkaart.setReiziger(reiziger1);
+        ovChipkaartDAO.update(newovChipkaart);
+        System.out.println("[Test] Na update is ovchipkaart: " + newovChipkaart);
+
+        List<OVChipkaart> ovChipkaartenByReiziger = ovChipkaartDAO.findByReiziger(reiziger);
+        System.out.println("[Test findByReiziger] For reiziger " + reiziger.getAchternaam() + ", found " + ovChipkaartenByReiziger.size() + " OVChipkaarten");
+
+        // Delete Test
+        System.out.println("\n[Test Delete] eerst zijn er " + ovChipkaarten.size() + " OVChipkaarten");
+        ovChipkaartDAO.delete(ovChipkaart);
+        ovChipkaarten = ovChipkaartDAO.findAll();
+        System.out.println("[Test] Na delete zijn er " + ovChipkaarten.size() + " OVChipkaarten");
+    }
+
 
     public static void main(String[] args) {
         ReizigerDAO reizigerDAO = new ReizigerDAOHibernate();
         AdresDAO adresDAO = new AdresDAOPHibernate();
+        OVChipkaartDAO ovChipkaartDAO = new OVChipkaartDAOPHibernate();
       //  testReiziger(reizigerDAO);
-        testAdres(adresDAO, reizigerDAO);
+       // testAdres(adresDAO, reizigerDAO);
+        testOVChipkaart(ovChipkaartDAO, reizigerDAO);
+
         HibernateUtil.shutdown();
         }
     }
