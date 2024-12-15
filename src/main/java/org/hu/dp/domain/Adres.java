@@ -2,7 +2,9 @@ package org.hu.dp.domain;
 
 import jakarta.persistence.*;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Entity
 @Table(name = "adres")
@@ -80,12 +82,34 @@ public class Adres {
     }
 
     public String toString() {
-        return String.format(
-                "Adres{id=%d, postcode='%s', huisnummer='%s', reizigerId=%d}",
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = formatter.format(reiziger.getGeboortedatum());
+
+
+        String voorletters_metpunt = "";
+        for (int i = 0; i < reiziger.getVoorletters().length(); i++) {
+            voorletters_metpunt += reiziger.getVoorletters().charAt(i);
+
+            if (i < reiziger.getVoorletters().length() - 1) {
+                voorletters_metpunt += ".";
+            }
+        }
+        if (reiziger.getVoorletters().length() > 1) {
+            voorletters_metpunt += ".";
+        }
+        if (reiziger.getVoorletters().length() == 1) {
+            voorletters_metpunt += ".";
+        }
+
+        String resultaat = String.format("Reiziger #%d %s%s %s (%s), Adres {#%d %s %s}",
+                reiziger.getReiziger_id(),
+                voorletters_metpunt,
+                (reiziger.getTussenvoegsel() != null) ? " " + reiziger.getTussenvoegsel() : "",
+                reiziger.getAchternaam(),
+                formattedDate,
                 adres_id,
                 postcode,
-                huisnummer,
-                reiziger != null ? reiziger.getReiziger_id() : null
-        );
+                huisnummer);
+        return resultaat;
     }
 }

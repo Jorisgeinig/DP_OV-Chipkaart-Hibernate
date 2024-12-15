@@ -22,7 +22,7 @@ public class Reiziger {
 
     private Date geboortedatum;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "adres") // One-to-one relationship
+    @OneToOne(cascade = CascadeType.ALL) // One-to-one relationship
     @JoinColumn(name = "reiziger_id")
     private Adres adres;
 
