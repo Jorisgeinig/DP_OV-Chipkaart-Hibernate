@@ -115,7 +115,14 @@ public class Reiziger {
             voorl_punt += ".";
         }
 
-        String adresid = String.valueOf(this.adres.getAdres_id());
+        String adresDetails = (adres != null)
+                ? String.format("Adres{id=%d, postcode='%s', huisnummer='%s', straat='%s', woonplaats='%s'}",
+                adres.getAdres_id(),
+                adres.getPostcode(),
+                adres.getHuisnummer(),
+                adres.getStraat(),
+                adres.getWoonplaats())
+                : "Adres{none}";
 
         return String.format("#%d %s%s %s (%s)",
                 reiziger_id,
@@ -123,6 +130,6 @@ public class Reiziger {
                 (tussenvoegsel != null) ? " " + tussenvoegsel : "",
                 achternaam,
                 formattedDate,
-                adresid);
+                adresDetails);
     }
 }
