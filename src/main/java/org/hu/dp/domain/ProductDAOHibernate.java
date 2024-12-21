@@ -4,12 +4,9 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.hu.dp.HibernateUtil;
 
-import java.sql.*;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-public class ProductDAOsql implements ProductDAO{
+public class ProductDAOHibernate implements ProductDAO{
 
     public boolean save(Product product) {
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -74,6 +71,26 @@ public class ProductDAOsql implements ProductDAO{
     }
 
     public List<Product> findByOVChipkaart(OVChipkaart ovChipkaart) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            session.beginTransaction();
+
+            // Use HQL to query the `ov_chipkaart_product` join table indirectly
+            String hql = "SELECT p FROM Product p JOIN p.ovChipkaarten o WHERE o.kaart_nummer = :kaart_nummer";
+            Query<Product> query = session.createQuery(hql, Product.class);
+            query.setParameter("kaart_nummer", ovChipkaart.getKaart_nummer());
+
+            List<Product> products = query.getResultList();
+
+            session.getTransaction().commit();
+            return products;
+        } catch (Exception e) {
+            if (session.getTransaction() != null) {
+                session.getTransaction().rollback();
+            }
+            System.out.println("Producten konden niet opgehaald worden.");
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -93,4 +110,18 @@ public class ProductDAOsql implements ProductDAO{
             session.close();
         }
     }
+
+    public Product findById(int productNummer) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            session.beginTransaction();
+            Product product = session.find(Product.class, productNummer);
+            session.close();
+            return product;
+        } catch (Exception e) {
+            System.out.println("Product is niet gevonden");
+            e.printStackTrace();
+        }
+        return null;
     }
+}

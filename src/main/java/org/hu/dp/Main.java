@@ -1,7 +1,6 @@
 package org.hu.dp;
 import org.hu.dp.domain.*;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class Main {
@@ -140,7 +139,7 @@ public class Main {
         ovChipkaartDAO.delete(ovChipkaart1);
     }
 
-    private static void testProduct(ProductDAO productDAO) {
+    private static void testProduct(ProductDAO productDAO, OVChipkaartDAO ovChipkaartDAO, ReizigerDAO reizigerDAO) {
         System.out.println("\n---------- Test ProductDAO -------------");
 
         // Haal alle producten op uit de database
@@ -151,12 +150,35 @@ public class Main {
         }
         System.out.println();
 
-        // Maak een nieuw product aan en persisteer deze in de database
+        // Maak een nieuw product aan en persisteer deze in de database met een gekoppelde ovchipkaart die al in de database staat
         Product product = new Product(10, "TestProduct", "Dit   is een testproduct", 19.99);
         System.out.print("[Test Save] Eerst " + producten.size() + " producten, na ProductDAO.save() ");
+        product.setOvChipkaarten(List.of(ovChipkaartDAO.findAll().get(1), ovChipkaartDAO.findAll().get(2)));
         productDAO.save(product);
         producten = productDAO.findAll();
         System.out.println(producten.size() + " producten\n");
+
+        // Persisteer reiziger, ovchipkaart en product in 1 keer. Product wordt via ovChipkaartDAO opgeslagen.
+        OVChipkaart ov7 = new OVChipkaart(77777, java.sql.Date.valueOf("2021-01-01"), 1, 50.00);
+        ov7.setReiziger(reizigerDAO.findAll().get(0));
+        Product product1 = new Product(7, "Weekend Vrij", "Gratis reizen in het weekend", 10.00);
+        Product product2 = new Product(8, "Alleen staan", "Alleen staan in het ov", 5.00);
+        ov7.getProducts().add(product1);
+        ov7.getProducts().add(product2);
+        product1.getOvChipkaarten().add(ov7);
+        product2.getOvChipkaarten().add(ov7);
+
+        // Test findbyovchipkaart
+        List<Product> productenlijst = productDAO.findByOVChipkaart(ov7);
+        for (Product p : productenlijst) {
+            System.out.println(p);
+        }
+        System.out.println("TEST");
+
+
+        System.out.println("[TEST] eerst " + productDAO.findAll().size() + " producten");
+        ovChipkaartDAO.save(ov7);
+        System.out.println("na twee keer productDAO.save " + productDAO.findAll().size() + " producten");
 
         // Update Test
         Product newProduct = new Product(10, "UpdatedProduct", "Dit is een geüpdatet testproduct", 29.99);
@@ -165,10 +187,14 @@ public class Main {
         System.out.println("[Test] Na update is product: " + newProduct);
 
         // Delete Test
-        System.out.println("\n[Test Delete] eerst zijn er " + producten.size() + " producten");
+        System.out.println("\n[Test Delete] eerst zijn er " + productDAO.findAll().size() + " producten");
         productDAO.delete(newProduct);
         List<Product> productenAfter = productDAO.findAll();
-        System.out.println("[Test] Na delete zijn er " + productenAfter.size() + " producten");
+        System.out.println("[Test] Na delete zijn er " + productDAO.findAll().size()+ " producten");
+
+        ovChipkaartDAO.delete(ov7);
+        productDAO.delete(product1);
+        productDAO.delete(product2);
     }
 
 
@@ -178,11 +204,11 @@ public class Main {
         ReizigerDAO reizigerDAO = new ReizigerDAOHibernate();
         AdresDAO adresDAO = new AdresDAOPHibernate();
         OVChipkaartDAO ovChipkaartDAO = new OVChipkaartDAOPHibernate();
-        ProductDAO productDAO = new ProductDAOsql();
+        ProductDAO productDAO = new ProductDAOHibernate();
       //  testReiziger(reizigerDAO);
        // testAdres(adresDAO, reizigerDAO);
        // testOVChipkaart(ovChipkaartDAO, reizigerDAO);
-        testProduct(productDAO);
+        testProduct(productDAO, ovChipkaartDAO, reizigerDAO);
 
 
         HibernateUtil.shutdown();

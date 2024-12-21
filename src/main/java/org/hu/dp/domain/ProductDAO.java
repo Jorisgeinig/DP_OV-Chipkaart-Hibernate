@@ -4,9 +4,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface ProductDAO {
-    public boolean save(Product product);
-    public boolean update(Product product);
-    public boolean delete(Product product);
-    public List<Product> findByOVChipkaart(OVChipkaart ovChipkaart);
-    public List<Product> findAll();
+    boolean save(Product product);
+    boolean update(Product product);
+    boolean delete(Product product);
+    List<Product> findByOVChipkaart(OVChipkaart ovChipkaart);
+    List<Product> findAll();
+    Product findById(int productNummer);
 }

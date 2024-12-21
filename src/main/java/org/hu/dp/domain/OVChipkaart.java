@@ -21,6 +21,10 @@ public class OVChipkaart {
     @JoinColumn(name = "reiziger_id", nullable = false)
     private Reiziger reiziger;
 
+    @ManyToMany(mappedBy = "ovChipkaarten", cascade = CascadeType.ALL)
+    private List<Product> products = new ArrayList<>();
+
+
     public OVChipkaart() {
 
     }
@@ -50,6 +54,13 @@ public class OVChipkaart {
 
     public void setReiziger(Reiziger reiziger) {
         this.reiziger = reiziger;
+    }
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 
     public String toString() {

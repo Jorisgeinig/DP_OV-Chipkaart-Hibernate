@@ -1,9 +1,6 @@
 package org.hu.dp.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +14,14 @@ public class Product {
     private String naam;
     private String beschrijving;
     private double prijs;
+
+    @ManyToMany
+    @JoinTable(
+            name = "ov_chipkaart_product",
+            joinColumns = @JoinColumn(name = "product_nummer"),
+            inverseJoinColumns = @JoinColumn(name = "kaart_nummer")
+    )
+    private List<OVChipkaart> ovChipkaarten = new ArrayList<>();
 
     public Product() {
 
@@ -59,6 +64,14 @@ public class Product {
 
     public void setPrijs(double prijs) {
         this.prijs = prijs;
+    }
+
+    public List<OVChipkaart> getOvChipkaarten() {
+        return ovChipkaarten;
+    }
+
+    public void setOvChipkaarten(List<OVChipkaart> ovChipkaarten) {
+        this.ovChipkaarten = ovChipkaarten;
     }
 
 
