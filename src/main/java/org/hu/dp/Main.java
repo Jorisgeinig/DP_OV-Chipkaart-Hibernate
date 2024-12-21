@@ -88,15 +88,33 @@ public class Main {
         }
         System.out.println();
 
-        // Create a new Reiziger and OVChipkaart, and persist them in the database
+        // Create a new Reiziger and OVChipkaart, associate them with each other
         Reiziger reiziger = new Reiziger(12, "S", null, "Boers", java.sql.Date.valueOf("1981-03-14"));
         OVChipkaart ovChipkaart = new OVChipkaart(12345, java.sql.Date.valueOf("2024-12-31"), 2, 50.0);
+        reiziger.getOvChipkaartList().add(ovChipkaart);
         ovChipkaart.setReiziger(reiziger);
 
-        System.out.print("[Test Save] Eerst " + ovChipkaarten.size() + " OVChipkaarten, na OVChipkaartDAO.save() ");
-        ovChipkaartDAO.save(ovChipkaart);
+        // Save the OVChipkaart with the Reiziger relation by just saving reiziger and making use of the cascade function
+        // Which then also saves OVChipkaart
+        System.out.print("[Test Save] Eerst " + ovChipkaarten.size() + " OVChipkaarten, na ReizigerDAO.save() ");
+        reizigerDAO.save(reiziger);
         ovChipkaarten = ovChipkaartDAO.findAll();
         System.out.println(ovChipkaarten.size() + " OVChipkaarten\n");
+
+
+        // Test saving just the OVChipkaart with an existing Reiziger in the database
+        System.out.print("[Test Save] Eerst " + ovChipkaarten.size() + " OVChipkaarten, na OVChipkaartDAO.save() ");
+        OVChipkaart ovChipkaart1 = new OVChipkaart(88888, java.sql.Date.valueOf("2013-08-04"), 1, 35.0);
+        Reiziger persistedReiziger = reizigerDAO.findAll().get(0);
+        ovChipkaart1.setReiziger(persistedReiziger);
+        ovChipkaartDAO.save(ovChipkaart1);
+        ovChipkaarten = ovChipkaartDAO.findAll();
+        System.out.println(ovChipkaarten.size() + " OVChipkaarten\n");
+        System.out.println("[Test] OVChipkaartDAO.findAll() geeft de volgende OVChipkaarten:");
+        for (OVChipkaart oc : ovChipkaarten) {
+            System.out.println(oc);
+        }
+        System.out.println();
 
         // Update Test
         System.out.println("[Test Update] eerst is ovchipkaart: " + ovChipkaart);
@@ -106,14 +124,19 @@ public class Main {
         ovChipkaartDAO.update(newovChipkaart);
         System.out.println("[Test] Na update is ovchipkaart: " + newovChipkaart);
 
-        List<OVChipkaart> ovChipkaartenByReiziger = ovChipkaartDAO.findByReiziger(reiziger);
-        System.out.println("[Test findByReiziger] For reiziger " + reiziger.getAchternaam() + ", found " + ovChipkaartenByReiziger.size() + " OVChipkaarten");
+
+        // Test findByReiziger() function.
+        List<OVChipkaart> ovChipkaartenByReiziger = ovChipkaartDAO.findByReiziger(reiziger1);
+        System.out.println("\n[Test findByReiziger] For reiziger " + reiziger1.getAchternaam() + ", found " + ovChipkaartenByReiziger.size() + " OVChipkaarten");
 
         // Delete Test
         System.out.println("\n[Test Delete] eerst zijn er " + ovChipkaarten.size() + " OVChipkaarten");
         ovChipkaartDAO.delete(ovChipkaart);
+        reizigerDAO.delete(reiziger);
         ovChipkaarten = ovChipkaartDAO.findAll();
         System.out.println("[Test] Na delete zijn er " + ovChipkaarten.size() + " OVChipkaarten");
+
+        ovChipkaartDAO.delete(ovChipkaart1);
     }
 
 

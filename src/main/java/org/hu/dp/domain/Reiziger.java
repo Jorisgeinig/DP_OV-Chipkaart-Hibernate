@@ -26,8 +26,7 @@ public class Reiziger {
     @JoinColumn(name = "reiziger_id")
     private Adres adres;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "reiziger_id")
+    @OneToMany(mappedBy = "reiziger", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OVChipkaart> ovChipkaartList = new ArrayList<>();
 
     public Reiziger(){
@@ -103,6 +102,11 @@ public class Reiziger {
 
     public void setOvChipkaartList(List<OVChipkaart> ovChipkaartList) {
         this.ovChipkaartList = ovChipkaartList;
+    }
+
+    public void removeOvChipkaartFromList(OVChipkaart ovChipkaart) {
+        ovChipkaart.setReiziger(null);
+        ovChipkaartList.remove(ovChipkaart);
     }
 
 

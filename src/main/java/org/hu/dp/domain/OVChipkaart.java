@@ -17,7 +17,7 @@ public class OVChipkaart {
     private int klasse;
     private double saldo;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "reiziger_id", nullable = false)
     private Reiziger reiziger;
 

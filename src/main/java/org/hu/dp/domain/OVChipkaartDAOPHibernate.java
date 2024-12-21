@@ -12,18 +12,14 @@ public class OVChipkaartDAOPHibernate implements OVChipkaartDAO {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
             session.beginTransaction();
-
-            // Save the ovChipkaart in the database
             session.persist(ovChipkaart);
-
-            // Commit the transaction
             session.getTransaction().commit();
-
             return true;
         } catch (Exception e) {
             if (session.getTransaction() != null) {
                 session.getTransaction().rollback();
             }
+            System.out.println("Er is iets fout gegaan bij het opslaan van de OVChipkaart");
             e.printStackTrace();
             return false;
         } finally {
@@ -37,7 +33,7 @@ public class OVChipkaartDAOPHibernate implements OVChipkaartDAO {
             session.beginTransaction();
 
             // Update the OVChipkaart in the database
-            session.update(ovChipkaart);
+            session.merge(ovChipkaart);
 
             // Commit the transaction
             session.getTransaction().commit();
@@ -47,6 +43,7 @@ public class OVChipkaartDAOPHibernate implements OVChipkaartDAO {
             if (session.getTransaction() != null) {
                 session.getTransaction().rollback();
             }
+            System.out.println("Updaten van OVChipkaart is niet gelukt.");
             e.printStackTrace();
             return false;
         } finally {
@@ -59,28 +56,25 @@ public class OVChipkaartDAOPHibernate implements OVChipkaartDAO {
         try {
             session.beginTransaction();
 
-            // Retrieve the persistent OVChipkaart from the database
-            OVChipkaart persistentOvChipkaart = session.get(OVChipkaart.class, ovChipkaart.getKaart_nummer());
-            if (persistentOvChipkaart != null) {
-                session.delete(persistentOvChipkaart);
-            } else {
-                System.out.println("OVChipkaart not found in the database");
-                return false;
+            OVChipkaart ovChipkaart1 = session.find(OVChipkaart.class, ovChipkaart.getKaart_nummer());
+            if (ovChipkaart1 != null) {
+                session.remove(ovChipkaart1);
+                // Commit the transaction
+                session.getTransaction().commit();
+
+                return true;
             }
-
-            // Commit the transaction
-            session.getTransaction().commit();
-
-            return true;
         } catch (Exception e) {
             if (session.getTransaction() != null) {
                 session.getTransaction().rollback();
             }
+            System.out.println("Reiziger niet gevonden in de database");
             e.printStackTrace();
             return false;
         } finally {
             session.close();
         }
+        return false;
     }
 
     public OVChipkaart findbyKaartNummer(int kaartNummer) {
@@ -100,6 +94,7 @@ public class OVChipkaartDAOPHibernate implements OVChipkaartDAO {
             if (session.getTransaction() != null) {
                 session.getTransaction().rollback();
             }
+            System.out.println("OVChipkaart niet gevonden in de database");
             e.printStackTrace();
             return null;
         } finally {
@@ -119,6 +114,7 @@ public class OVChipkaartDAOPHibernate implements OVChipkaartDAO {
 
             return ovChipkaarten;
         } catch (Exception e) {
+            System.out.println("Er is iets fout gegaan bij het opzoeken van alle OvChipkaarten");
             e.printStackTrace();
             return null;
         } finally {
@@ -143,6 +139,7 @@ public class OVChipkaartDAOPHibernate implements OVChipkaartDAO {
             if (session.getTransaction() != null) {
                 session.getTransaction().rollback();
             }
+            System.out.println("OVChipkaart(en) niet gevonden bij deze reiziger of in de database");
             e.printStackTrace();
             return null;
         } finally {
