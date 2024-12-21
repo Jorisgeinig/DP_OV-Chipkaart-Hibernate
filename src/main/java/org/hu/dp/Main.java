@@ -168,17 +168,18 @@ public class Main {
         product1.getOvChipkaarten().add(ov7);
         product2.getOvChipkaarten().add(ov7);
 
+
+
+        System.out.println("[TEST] eerst " + productDAO.findAll().size() + " producten");
+        ovChipkaartDAO.save(ov7);
+        System.out.println("na twee keer productDAO.save " + productDAO.findAll().size() + " producten");
+
         // Test findbyovchipkaart
         List<Product> productenlijst = productDAO.findByOVChipkaart(ov7);
         for (Product p : productenlijst) {
             System.out.println(p);
         }
         System.out.println("TEST");
-
-
-        System.out.println("[TEST] eerst " + productDAO.findAll().size() + " producten");
-        ovChipkaartDAO.save(ov7);
-        System.out.println("na twee keer productDAO.save " + productDAO.findAll().size() + " producten");
 
         // Update Test
         Product newProduct = new Product(10, "UpdatedProduct", "Dit is een geüpdatet testproduct", 29.99);
@@ -189,7 +190,6 @@ public class Main {
         // Delete Test
         System.out.println("\n[Test Delete] eerst zijn er " + productDAO.findAll().size() + " producten");
         productDAO.delete(newProduct);
-        List<Product> productenAfter = productDAO.findAll();
         System.out.println("[Test] Na delete zijn er " + productDAO.findAll().size()+ " producten");
 
         ovChipkaartDAO.delete(ov7);
