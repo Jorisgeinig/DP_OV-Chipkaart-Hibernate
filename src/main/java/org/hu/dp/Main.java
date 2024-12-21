@@ -1,6 +1,7 @@
 package org.hu.dp;
 import org.hu.dp.domain.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class Main {
@@ -139,14 +140,50 @@ public class Main {
         ovChipkaartDAO.delete(ovChipkaart1);
     }
 
+    private static void testProduct(ProductDAO productDAO) {
+        System.out.println("\n---------- Test ProductDAO -------------");
+
+        // Haal alle producten op uit de database
+        List<Product> producten = productDAO.findAll();
+        System.out.println("[Test] ProductDAO.findAll() geeft de volgende producten:");
+        for (Product p : producten) {
+            System.out.println(p);
+        }
+        System.out.println();
+
+        // Maak een nieuw product aan en persisteer deze in de database
+        Product product = new Product(10, "TestProduct", "Dit   is een testproduct", 19.99);
+        System.out.print("[Test Save] Eerst " + producten.size() + " producten, na ProductDAO.save() ");
+        productDAO.save(product);
+        producten = productDAO.findAll();
+        System.out.println(producten.size() + " producten\n");
+
+        // Update Test
+        Product newProduct = new Product(10, "UpdatedProduct", "Dit is een geüpdatet testproduct", 29.99);
+        System.out.println("[Test Update] eerst is product: " + product);
+        productDAO.update(newProduct);
+        System.out.println("[Test] Na update is product: " + newProduct);
+
+        // Delete Test
+        System.out.println("\n[Test Delete] eerst zijn er " + producten.size() + " producten");
+        productDAO.delete(newProduct);
+        List<Product> productenAfter = productDAO.findAll();
+        System.out.println("[Test] Na delete zijn er " + productenAfter.size() + " producten");
+    }
+
+
+
 
     public static void main(String[] args) {
         ReizigerDAO reizigerDAO = new ReizigerDAOHibernate();
         AdresDAO adresDAO = new AdresDAOPHibernate();
         OVChipkaartDAO ovChipkaartDAO = new OVChipkaartDAOPHibernate();
+        ProductDAO productDAO = new ProductDAOsql();
       //  testReiziger(reizigerDAO);
        // testAdres(adresDAO, reizigerDAO);
-        testOVChipkaart(ovChipkaartDAO, reizigerDAO);
+       // testOVChipkaart(ovChipkaartDAO, reizigerDAO);
+        testProduct(productDAO);
+
 
         HibernateUtil.shutdown();
         }

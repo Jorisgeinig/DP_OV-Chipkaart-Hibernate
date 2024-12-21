@@ -6,6 +6,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
 import org.hu.dp.domain.Adres;
 import org.hu.dp.domain.OVChipkaart;
+import org.hu.dp.domain.Product;
 import org.hu.dp.domain.Reiziger;
 
 public class HibernateUtil {
@@ -22,6 +23,7 @@ public class HibernateUtil {
                     .addAnnotatedClass(Reiziger.class)
                     .addAnnotatedClass(Adres.class)
                     .addAnnotatedClass(OVChipkaart.class)
+                    .addAnnotatedClass(Product.class)
                     .buildSessionFactory(serviceRegistry);
         } catch (Throwable ex) {
             System.err.println("Initial SessionFactory creation failed: " + ex);
